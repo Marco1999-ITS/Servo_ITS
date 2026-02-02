@@ -1,5 +1,3 @@
-// NON servono più librerie Servo!
-
 int ledpin = 4;       
 int pushbutton = 7;
 int motorPin = 9;  
@@ -12,10 +10,9 @@ void setup() {
   Serial.begin(9600);
   pinMode(ledpin, OUTPUT);
   pinMode(pushbutton, INPUT);
-  
   pinMode(motorPin, OUTPUT);
   
-  Serial.println("--- Sistema Motore DC Avviato ---");
+  Serial.println("--- Sistema Soft-Start / Soft-Stop Avviato ---");
 }
 
 void loop(){
@@ -24,15 +21,36 @@ void loop(){
   
   if (val == 1 && val != lastval){
     
-    // Invertiamo lo stato
+    
     ledstate = !ledstate;
+    digitalWrite(ledpin, ledstate); 
+   
     
-
-    digitalWrite(ledpin, ledstate);  
-    digitalWrite(motorPin, ledstate); 
-    Serial.println("ON -> Motore ACCESO");
-    
- 
+    if (ledstate == HIGH) {
+      
+       Serial.println("ON -> Accelerazione in corso...");
+       
+       for (int i = 0; i <= 255; i++) {
+         analogWrite(motorPin, i);
+         delay(10); 
+         Serial.println(i);
+       }
+       
+       Serial.println("Massima potenza raggiunta (255)");
+    } 
+    else {
+       
+       Serial.println("OFF -> Decelerazione in corso...");
+       
+       for (int i = 255; i >= 0; i--) {
+         analogWrite(motorPin, i);
+         delay(10); 
+         Serial.println(i);
+       }
+       
+       Serial.println("Motore Fermo (0)");
+    }
+  
     
     delay(100); 
   }
