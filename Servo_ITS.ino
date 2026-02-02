@@ -1,26 +1,30 @@
 
-const int pinPulsante = 7;
-const int pinLed = 4;
+
+
+int ledpin = 4;       
+int pushbutton = 7;
+int val;
+int lastval = 0;
+int ledstate = LOW;    
 
 void setup() {
-  Serial.begin(115200); // CORRETTO: "S" maiuscola
-  pinMode(pinPulsante, INPUT);
-  pinMode(pinLed, OUTPUT);
+  Serial.begin(9600);
+  pinMode(ledpin, OUTPUT);
+  pinMode(pushbutton, INPUT);
 }
 
-void loop() {
-  int val = digitalRead(pinPulsante);
-  int memo = 0;
-  
-  Serial.println(val); 
+void loop(){
+  val = digitalRead(pushbutton);
 
-  if (val == 1) {
-    digitalWrite(pinLed, HIGH); 
+  
+  if (val == 1 && val != lastval){
+    ledstate = !ledstate;
+    digitalWrite(ledpin, ledstate); 
     
-  } 
-  else {
-    digitalWrite(pinLed, LOW);  
+    
+    delay(50); 
   }
   
-  delay(100);
+  lastval = val; 
 }
+
